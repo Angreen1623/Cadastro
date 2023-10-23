@@ -1,6 +1,9 @@
 package com.example.myapplication
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -63,13 +66,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.db.DBHandler
 import com.example.myapplication.ui.theme.DarkBlueMenu
 
 class MainActivity : ComponentActivity() {
@@ -130,7 +136,7 @@ fun MenuTopBar() {
             .background(Color.Black)
             .padding(it)){
 
-            FormLayoutFilled()
+            FormLayoutFilled(LocalContext.current)
         }
     }
 }
@@ -143,7 +149,28 @@ fun MenuTopBarPreview(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormLayoutFilled() {
+fun FormLayoutFilled(context: Context
+) {
+
+    val activity = context as Activity
+
+    val options = listOf("Telefone Fixo", "Celular", "Whatsapp")
+
+    val userName = remember {
+        mutableStateOf(TextFieldValue())
+    }
+    val userPhone = remember {
+        mutableStateOf(TextFieldValue())
+    }
+    val userOrigin = remember {
+        mutableStateOf(options[0])
+    }
+    val userObservation = remember {
+        mutableStateOf(TextFieldValue())
+    }
+
+    var dbHandler: DBHandler = DBHandler(context)
+
     val focusManager = LocalFocusManager.current
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -155,26 +182,14 @@ fun FormLayoutFilled() {
             contentPadding = PaddingValues(vertical = 24.dp)
         ) {
             item {
-                var text by remember { mutableStateOf("") }
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     label = { Text("Nome") },
-                    value = text,
-                    onValueChange = { text = it },
+                    value = userName.value,
+                    onValueChange = { userName.value = it },
                     singleLine = true,
-                    trailingIcon = {
-                        AnimatedVisibility(
-                            visible = text.isNotBlank(),
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            IconButton(onClick = { text = "" }) {
-                                Icon(Icons.Outlined.Clear, "Clear")
-                            }
-                        }
-                    },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next,
@@ -193,20 +208,9 @@ fun FormLayoutFilled() {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     label = { Text("Telefone") },
-                    value = text,
-                    onValueChange = { text = it },
+                    value = userPhone.value,
+                    onValueChange = { userPhone.value = it },
                     singleLine = true,
-                    trailingIcon = {
-                        AnimatedVisibility(
-                            visible = text.isNotBlank(),
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            IconButton(onClick = { text = "" }) {
-                                Icon(Icons.Outlined.Clear, "Clear")
-                            }
-                        }
-                    },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next,
@@ -218,7 +222,42 @@ fun FormLayoutFilled() {
                 )
             }
             item{
-                MenuSample()
+
+                var expanded by remember { mutableStateOf(false) }
+
+                // We want to react on tap/press on TextField to show menu
+                ExposedDropdownMenuBox(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded },
+                ) {
+                    TextField(
+                        // The `menuAnchor` modifier must be passed to the text field for correctness.
+                        modifier = Modifier.menuAnchor(),
+                        readOnly = true,
+                        value = userOrigin.value,
+                        onValueChange = {},
+                        label = { Text("Origem:") },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                    ) {
+                        options.forEach { selectionOption ->
+                            DropdownMenuItem(
+                                text = { Text(selectionOption) },
+                                onClick = {
+                                    userOrigin.value = selectionOption
+                                    expanded = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                            )
+                        }
+                    }
+                }
             }
 
             item {
@@ -229,20 +268,9 @@ fun FormLayoutFilled() {
                         .height(100.dp)
                         .padding(horizontal = 16.dp),
                     label = { Text("Observação") },
-                    value = text,
-                    onValueChange = { text = it },
+                    value = userObservation.value,
+                    onValueChange = { userObservation.value = it },
                     singleLine = true,
-                    trailingIcon = {
-                        AnimatedVisibility(
-                            visible = text.isNotBlank(),
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            IconButton(onClick = { text = "" }) {
-                                Icon(Icons.Outlined.Clear, "Clear")
-                            }
-                        }
-                    },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next,
@@ -262,7 +290,18 @@ fun FormLayoutFilled() {
 
                     ) {
 
-                        ButtonW("Enviar")
+                        Button(onClick = {
+                            dbHandler.addNewUser(
+                                userName.value.text,
+                                userPhone.value.text,
+                                userOrigin.value,
+                                userObservation.value.text
+                            )
+                            Toast.makeText(context, "Usuário adicionado ao banco de dados", Toast.LENGTH_SHORT).show()
+
+                        }) {
+                            Text("Enviar")
+                        }
                         Surface(
                             modifier = Modifier
                                 .padding(horizontal = 30.dp)
@@ -275,54 +314,6 @@ fun FormLayoutFilled() {
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MenuSample() {
-    val options = listOf("Telefone Fixo", "Celular", "Whatsapp")
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(options[0]) }
-    // We want to react on tap/press on TextField to show menu
-    ExposedDropdownMenuBox(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-    ) {
-        TextField(
-            // The `menuAnchor` modifier must be passed to the text field for correctness.
-            modifier = Modifier.menuAnchor(),
-            readOnly = true,
-            value = selectedOptionText,
-            onValueChange = {},
-            label = { Text("Origem:") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            options.forEach { selectionOption ->
-                DropdownMenuItem(
-                    text = { Text(selectionOption) },
-                    onClick = {
-                        selectedOptionText = selectionOption
-                        expanded = false
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                )
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 200, heightDp = 300)
-@Composable
-fun MenuSamplePreview() {
-    MenuSample()
 }
 
 @Composable
