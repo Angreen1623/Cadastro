@@ -16,26 +16,38 @@ class DBHandler
         val query = ("CREATE TABLE " + TABLE_NAME + "("
                 + ID_COL + "INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + NAME_COL + "TEXT,"
+                + ADDRESS_COL + "TEXT,"
+                + NEIGHBORHOOD_COL + "TEXT,"
+                + ZIP_COL + "TEXT,"
+                + CITY_COL + "TEXT,"
+                + STATE_COL + "TEXT,"
                 + PHONE_COL + "TEXT,"
-                + ORIGIN_COL + "TEXT,"
-                + OBSERVATION_COL + "TEXT)")
+                + CELLPHONE_COL + "TEXT)")
 
         db.execSQL(query)
     }
 
     fun addNewUser(
-        userName: String?,
+        userNome: String?,
+        userEndereco: String?,
+        userBairro: String?,
+        userCep: String?,
+        userCidade: String?,
+        userEstado: String?,
         userTelefone: String?,
-        userOrigem: String?,
-        userObservacoes: String?
+        userCelular: String?
     ){
         val db = this.writableDatabase
         val values = ContentValues()
 
-        values.put(NAME_COL, userName)
+        values.put(NAME_COL, userNome)
+        values.put(ADDRESS_COL, userEndereco)
+        values.put(NEIGHBORHOOD_COL, userBairro)
+        values.put(ZIP_COL, userCep)
+        values.put(CITY_COL, userCidade)
+        values.put(STATE_COL, userEstado)
         values.put(PHONE_COL, userTelefone)
-        values.put(ORIGIN_COL, userOrigem)
-        values.put(OBSERVATION_COL, userObservacoes)
+        values.put(CELLPHONE_COL, userCelular)
 
         db.insert(TABLE_NAME, null, values)
 
@@ -56,9 +68,13 @@ class DBHandler
         private const val TABLE_NAME = "myusers"
         private const val ID_COL = "id"
         private const val NAME_COL = "nome"
+        private const val ADDRESS_COL = "endereco"
+        private const val NEIGHBORHOOD_COL = "bairro"
+        private const val ZIP_COL= "cep"
+        private const val CITY_COL = "cidade"
+        private const val STATE_COL = "estado"
         private const val PHONE_COL = "telefone"
-        private const val ORIGIN_COL = "origem"
-        private const val OBSERVATION_COL = "descricao"
+        private const val CELLPHONE_COL = "telefone"
 
 
     }

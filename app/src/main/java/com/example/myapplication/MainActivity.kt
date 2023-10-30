@@ -154,18 +154,34 @@ fun FormLayoutFilled(context: Context
 
     val activity = context as Activity
 
-    val options = listOf("Telefone Fixo", "Celular", "Whatsapp")
+    val userNome = remember {
+        mutableStateOf(TextFieldValue())
+    }
 
-    val userName = remember {
+    val userEndereco = remember {
         mutableStateOf(TextFieldValue())
     }
-    val userPhone = remember {
+
+    val userBairro = remember {
         mutableStateOf(TextFieldValue())
     }
-    val userOrigin = remember {
-        mutableStateOf(options[0])
+
+    val userCep = remember {
+        mutableStateOf(TextFieldValue())
     }
-    val userObservation = remember {
+
+    val userCidade = remember {
+        mutableStateOf(TextFieldValue())
+    }
+
+    val userEstado = remember {
+        mutableStateOf(TextFieldValue())
+    }
+
+    val userTelefone = remember {
+        mutableStateOf(TextFieldValue())
+    }
+    val userCelular = remember {
         mutableStateOf(TextFieldValue())
     }
 
@@ -187,8 +203,108 @@ fun FormLayoutFilled(context: Context
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     label = { Text("Nome") },
-                    value = userName.value,
-                    onValueChange = { userName.value = it },
+                    value = userNome.value,
+                    onValueChange = { userNome.value = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Words
+                    ),
+                    keyboardActions = KeyboardActions {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
+                )
+
+            }
+            item {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    label = { Text("Endereço") },
+                    value = userEndereco.value,
+                    onValueChange = { userEndereco.value = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Words
+                    ),
+                    keyboardActions = KeyboardActions {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
+                )
+
+            }
+            item {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    label = { Text("Bairro") },
+                    value = userBairro.value,
+                    onValueChange = { userBairro.value = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Words
+                    ),
+                    keyboardActions = KeyboardActions {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
+                )
+
+            }
+            item {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    label = { Text("CEP") },
+                    value = userCep.value,
+                    onValueChange = { userCep.value = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Words
+                    ),
+                    keyboardActions = KeyboardActions {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
+                )
+
+            }
+            item {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    label = { Text("Cidade") },
+                    value = userCidade.value,
+                    onValueChange = { userCidade.value = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Words
+                    ),
+                    keyboardActions = KeyboardActions {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
+                )
+
+            }
+            item {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    label = { Text("Estado") },
+                    value = userEstado.value,
+                    onValueChange = { userEstado.value = it },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -208,8 +324,8 @@ fun FormLayoutFilled(context: Context
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     label = { Text("Telefone") },
-                    value = userPhone.value,
-                    onValueChange = { userPhone.value = it },
+                    value = userTelefone.value,
+                    onValueChange = { userTelefone.value = it },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -221,55 +337,15 @@ fun FormLayoutFilled(context: Context
                     }
                 )
             }
-            item{
-
-                var expanded by remember { mutableStateOf(false) }
-
-                // We want to react on tap/press on TextField to show menu
-                ExposedDropdownMenuBox(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    expanded = expanded,
-                    onExpandedChange = { expanded = !expanded },
-                ) {
-                    TextField(
-                        // The `menuAnchor` modifier must be passed to the text field for correctness.
-                        modifier = Modifier.menuAnchor(),
-                        readOnly = true,
-                        value = userOrigin.value,
-                        onValueChange = {},
-                        label = { Text("Origem:") },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                    ) {
-                        options.forEach { selectionOption ->
-                            DropdownMenuItem(
-                                text = { Text(selectionOption) },
-                                onClick = {
-                                    userOrigin.value = selectionOption
-                                    expanded = false
-                                },
-                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                            )
-                        }
-                    }
-                }
-            }
-
             item {
                 var text by remember { mutableStateOf("") }
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp)
                         .padding(horizontal = 16.dp),
-                    label = { Text("Observação") },
-                    value = userObservation.value,
-                    onValueChange = { userObservation.value = it },
+                    label = { Text("Celular") },
+                    value = userCelular.value,
+                    onValueChange = { userCelular.value = it },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -292,10 +368,14 @@ fun FormLayoutFilled(context: Context
 
                         Button(onClick = {
                             dbHandler.addNewUser(
-                                userName.value.text,
-                                userPhone.value.text,
-                                userOrigin.value,
-                                userObservation.value.text
+                                userNome.value.text,
+                                userEndereco.value.text,
+                                userBairro.value.text,
+                                userCep.value.text,
+                                userCidade.value.text,
+                                userEstado.value.text,
+                                userTelefone.value.text,
+                                userCelular.value.text
                             )
                             Toast.makeText(context, "Usuário adicionado ao banco de dados", Toast.LENGTH_SHORT).show()
 
