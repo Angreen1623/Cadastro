@@ -2,7 +2,6 @@ package com.example.myapplication.db;
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.myapplication.model.UserModel
@@ -13,16 +12,16 @@ class DBHandler
 
     override fun onCreate(db: SQLiteDatabase){
 
-        val query = ("CREATE TABLE " + TABLE_NAME + "("
-                + ID_COL + "INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + NAME_COL + "TEXT,"
-                + ADDRESS_COL + "TEXT,"
-                + NEIGHBORHOOD_COL + "TEXT,"
-                + ZIP_COL + "TEXT,"
-                + CITY_COL + "TEXT,"
-                + STATE_COL + "TEXT,"
-                + PHONE_COL + "TEXT,"
-                + CELLPHONE_COL + "TEXT)")
+        val query = ("CREATE TABLE " + TABLE_NAME + " ("
+                + ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + NAME_COL + " TEXT,"
+                + ADDRESS_COL + " TEXT,"
+                + NEIGHBORHOOD_COL + " TEXT,"
+                + ZIP_COL + " TEXT,"
+                + CITY_COL + " TEXT,"
+                + STATE_COL + " TEXT,"
+                + PHONE_COL + " TEXT,"
+                + CELLPHONE_COL + " TEXT)")
 
         db.execSQL(query)
     }
@@ -74,7 +73,7 @@ class DBHandler
         private const val CITY_COL = "cidade"
         private const val STATE_COL = "estado"
         private const val PHONE_COL = "telefone"
-        private const val CELLPHONE_COL = "telefone"
+        private const val CELLPHONE_COL = "celular"
 
 
     }

@@ -318,7 +318,6 @@ fun FormLayoutFilled(context: Context
 
             }
             item {
-                var text by remember { mutableStateOf("") }
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -338,7 +337,6 @@ fun FormLayoutFilled(context: Context
                 )
             }
             item {
-                var text by remember { mutableStateOf("") }
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()

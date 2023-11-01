@@ -10,5 +10,4 @@ data class UserModel(
     var userEstado: String,
     var userTelefone: String,
     var userCelular: String
-
 )
